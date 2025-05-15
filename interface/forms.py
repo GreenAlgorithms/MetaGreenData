@@ -16,7 +16,7 @@ class OperationalImpactValues(forms.Form):
         ("2", "GPUs"),
         ("3", "Memory"),
         ("4", "Storage"),
-        ("4", "Networking"),
+        ("5", "Networking"),
     )
     hardware_boundaries = forms.MultipleChoiceField(
         widget=forms.CheckboxSelectMultiple,
