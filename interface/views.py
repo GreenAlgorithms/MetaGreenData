@@ -22,8 +22,12 @@ def convert_response_to_yml(response_dict):
 
     #methods
     output_dict["computing"]["operational"]["methods"] = {}
+    output_dict["computing"]["operational"]["methods"]["software_boundaries"] = response_dict.get("software_boundaries")
     output_dict["computing"]["operational"]["methods"]["hardware_boundaries"] = response_dict.get("hardware_boundaries")
     output_dict["computing"]["operational"]["methods"]["details_of_hardware"] = response_dict.get("details_of_hardware")
+    output_dict["computing"]["operational"]["methods"]["electrical_carbon_intensity"] = {}
+    output_dict["computing"]["operational"]["methods"]["electrical_carbon_intensity"]["value"] = reponse_dict.get("electrical_carbon_intensity")
+    output_dict["computing"]["operational"]["methods"]["electrical_carbon_intensity"]["source"] = reponse_dict.get("electrical_carbon_intensity_source")
 
     return output_dict
     
