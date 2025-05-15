@@ -1,7 +1,7 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
-from .forms import MetaDataForm
+from .forms import OperationalImpactValues
 
 
 def index(request):
@@ -11,7 +11,7 @@ def get_metadata(request):
     # if this is a POST request we need to process the form data
     if request.method == "POST":
         # create a form instance and populate it with data from the request:
-        form = MetaDataForm(request.POST)
+        form = OperationalImpactValues(request.POST)
         # check whether it's valid:
         if form.is_valid():
             # process the data in form.cleaned_data as required
@@ -21,7 +21,7 @@ def get_metadata(request):
 
     # if a GET (or any other method) we'll create a blank form
     else:
-        form = MetaDataForm()
+        form = OperationalImpactValues()
 
     return render(request, "metadata.html", {"form": form})
 
