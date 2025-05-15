@@ -21,5 +21,6 @@ from interface import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('',  view=views.get_metadata, name='metadata'),
+    path('',  view=views.index, name='home'),
+    path('computing', views.get_metadata, name='computing')
 ]

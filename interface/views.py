@@ -4,6 +4,9 @@ from django.shortcuts import render
 from .forms import MetaDataForm
 
 
+def index(request):
+    return render(request, "home.html")
+
 def get_metadata(request):
     # if this is a POST request we need to process the form data
     if request.method == "POST":
@@ -15,7 +18,6 @@ def get_metadata(request):
             # ...
             # redirect to a new URL:
             return render(request, "thanks.html", {"form": form})
-            # return HttpResponseRedirect("/thanks/")
 
     # if a GET (or any other method) we'll create a blank form
     else:
