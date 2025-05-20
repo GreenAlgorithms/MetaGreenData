@@ -1,3 +1,23 @@
-<a href="#">Travel</a>
-<a href="#">Experimental work</a>
-<a href="{% url 'computing'  %}" class="pull-right" > Computing</a>
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+    .site-header {
+    background-color: #9FCC2E; /* Example color */
+    padding: 20px;
+    height: 100px; /* Adjust as needed */
+    text-align: center;
+}
+</style>
+    <title>My Website</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <header class="site-header">
+    <a href="#">Travel</a>
+    <a href="#">Experimental work</a>
+    <a href="{% url 'computing'  %}"> Computing</a>
+    </header>
+</body>
+</html>
