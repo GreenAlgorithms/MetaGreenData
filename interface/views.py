@@ -109,7 +109,7 @@ def get_yml_preview(request):
         
         # Convert to YAML
         yml_content = yaml.dump(data, sort_keys=False, allow_unicode=True)
-        return JsonResponse({'success': True, 'yml': yml_content})
+        return HttpResponse(yml_content, content_type='application/x-yaml')
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)})
 
@@ -117,16 +117,9 @@ def download_yml(request):
     try:
         response = get_yml_preview(request)
         if response.status_code == 200:
-            data = json.loads(response.content)
-            yml_content = data['yml']
-            
-            # Create response
-            response = HttpResponse(yml_content, content_type='application/x-yaml')
             filename = request.GET.get('title', 'metadata').lower().replace(' ', '_')
             response['Content-Disposition'] = f'attachment; filename="{filename}.yml"'
-            return response
-        else:
-            return response
+        return response
     
     except Exception as e:
         return HttpResponse(str(e), status=400)
