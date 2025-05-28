@@ -1,4 +1,4 @@
-from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, HttpResponseBadRequest
 from django.shortcuts import render, redirect
 from django.views.decorators.http import require_http_methods
 import yaml
@@ -111,7 +111,7 @@ def get_yml_preview(request):
         yml_content = yaml.dump(data, sort_keys=False, allow_unicode=True)
         return HttpResponse(yml_content, content_type='application/x-yaml')
     except Exception as e:
-        return JsonResponse({'success': False, 'error': str(e)})
+        return HttpResponseBadRequest(str(e))
 
 def download_yml(request):
     try:
@@ -122,7 +122,7 @@ def download_yml(request):
         return response
     
     except Exception as e:
-        return HttpResponse(str(e), status=400)
+        return HttpResponseBadRequest(str(e))
 
 def work_in_progress(request, form_type):
     return render(request, "work_in_progress.html", {'form_type': form_type})
