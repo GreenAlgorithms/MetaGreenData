@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MetaGreenData</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #2c3e50;
+      --secondary-color: #27ae60;
+      --bg-light: #f8f9fa;
+      --text-muted: #6c757d;
+    }
+
+    body {
+      background: var(--bg-light);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    .progress-sidebar {
+      display: none;
+      background: white;
+      border-right: 1px solid #dee2e6;
+      height: 100vh;
+      position: fixed;
+      width: 280px;
+      padding: 2rem 1rem;
+    }
+
+    body.has-progress-sidebar .progress-sidebar {
+      display: block;
+    }
+
+    body.has-progress-sidebar .main-content {
+      margin-left: 280px;
+      max-width: calc(100% - 280px);
+    }
+
+    .progress-item {
+      padding: 0.75rem 1rem;
+      margin: 0.5rem 0;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .progress-item:hover {
+      background: rgba(44, 62, 80, 0.1);
+    }
+
+    .progress-item.active {
+      background: var(--primary-color);
+      color: white;
+    }
+
+    .progress-item i {
+      margin-right: 0.5rem;
+    }
+
+    .main-content {
+      padding: 2rem;
+    }
+
+    .form-section {
+      background: white;
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      margin-bottom: 2rem;
+    }
+
+    .form-control,
+    .form-select {
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      border: 1px solid #dee2e6;
+    }
+
+    .btn-primary {
+      background: var(--primary-color);
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+    }
+
+    .btn-success {
+      background: var(--secondary-color);
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+    }
+
+    .yaml-preview {
+      background: #1a1a1a;
+      color: #e6e6e6;
+      padding: 1.5rem;
+      border-radius: 8px;
+      font-family: 'Monaco', 'Consolas', monospace;
+    }
+
+    .author-item {
+      background: #f8f9fa;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .remove-author {
+      color: #dc3545;
+      cursor: pointer;
+    }
+
+    .progress-bar {
+      height: 8px;
+      border-radius: 4px;
+      background-color: var(--secondary-color);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="progress-sidebar">
+    <h4 class="mb-4">Progress</h4>
+    <div class="progress mb-4" style="height: 8px;">
+      <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0"
+        aria-valuemax="100"></div>
+    </div>
+    <div id="progress-items">
+      <div class="progress-item" data-section="basic">
+        <i class="fas fa-info-circle"></i> Basic Information
+      </div>
+      <div class="progress-item" data-section="embodied">
+        <i class="fas fa-microchip"></i> Embodied Impact
+      </div>
+      <div class="progress-item" data-section="operational">
+        <i class="fas fa-bolt"></i> Operational Impact
+      </div>
+      <div class="progress-item" data-section="preview">
+        <i class="fas fa-eye"></i> Preview & Download
+      </div>
+    </div>
+  </div>
+
+  <div class="main-content">
+    {% block content %}{% endblock %}
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // Progress tracking
+      const progressItems = document.querySelectorAll('.progress-item');
+      const progressBar = document.querySelector('.progress-bar');
+      let currentSection = 0;
+
+      function updateProgress() {
+        const progress = ((currentSection + 1) / progressItems.length) * 100;
+        progressBar.style.width = progress + '%';
+        progressBar.setAttribute('aria-valuenow', progress);
+      }
+
+      progressItems.forEach((item, index) => {
+        item.addEventListener('click', () => {
+          progressItems.forEach(i => i.classList.remove('active'));
+          item.classList.add('active');
+          currentSection = index;
+          updateProgress();
+        });
+      });
+
+      // Set initial active state
+      if (progressItems.length > 0) {
+        progressItems[0].classList.add('active');
+        updateProgress();
+      }
+    });
+  </script>
+  {% block extra_js %}{% endblock %}
+</body>
+
+</html>

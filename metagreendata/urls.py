@@ -16,11 +16,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-
-from interface import views
+from interface.views import index, computing_form_view, work_in_progress, get_yml_preview, download_yml
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('',  view=views.index, name='home'),
-    path('computing', views.get_metadata, name='computing')
+    path('', index, name='home'),
+    path('computing/', computing_form_view, name='computing'),
+    path('work-in-progress/<str:form_type>/', work_in_progress, name='work_in_progress'),
+    path('computing/yml-preview/', get_yml_preview, name='yml_preview'),
+    path('computing/download/', download_yml, name='download_yml'),
 ]
