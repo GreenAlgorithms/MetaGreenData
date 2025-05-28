@@ -16,34 +16,6 @@ from .models import BasicInformation
 def index(request):
     return render(request, "home.html")
 
-def metadata_form_view(request):
-    if request.method == 'POST':
-        # Handle form submission based on the current step
-        step = request.POST.get('step', 'basic')
-        
-        if step == 'basic':
-            form = BasicInformationForm(request.POST)
-            if form.is_valid():
-                basic_info = form.save()
-                return JsonResponse({'success': True, 'id': basic_info.id})
-        
-        elif step in ['embodied', 'operational']:
-            if step == 'embodied':
-                form = EmbodiedImpactForm(request.POST, prefix='embodied')
-            else:
-                form = OperationalImpactForm(request.POST, prefix='operational')
-            
-            if form.is_valid():
-                impact = form.save()
-                return JsonResponse({'success': True, 'id': impact.id})
-    
-    # Initialize forms for GET request
-    context = {
-        'basic_form': BasicInformationForm(),
-        'embodied_form': EmbodiedImpactForm(prefix='embodied'),
-        'operational_form': OperationalImpactForm(prefix='operational'),
-    }
-    return render(request, 'metadata.html', context)
 
 def get_yml_preview(request):
     try:
