@@ -418,12 +418,20 @@
             });
 
             fetch(`/computing/yml-preview/?${params.toString()}`)
-                .then(response => response.json())
+                .then(response => {
+                    return response.text().then(bodyText => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP ${response.status} - ${bodyText}`);
+                        }
+                        return bodyText;
+                    });
+                })
                 .then(data => {
-                    if (data.success) {
-                        document.getElementById('yml-preview').textContent = data.yml;
-                    }
-                });
+                    document.getElementById('yml-preview').textContent = data;
+                })
+                .catch(error => {
+                    console.error('Error fetching Live Preview:', error);
+                })
         }, 300);
     }
 

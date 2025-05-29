@@ -1,4 +1,4 @@
-from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, HttpResponseBadRequest
 from django.shortcuts import render, redirect
 from django.views.decorators.http import require_http_methods
 import yaml
@@ -16,34 +16,6 @@ from .models import BasicInformation
 def index(request):
     return render(request, "home.html")
 
-def metadata_form_view(request):
-    if request.method == 'POST':
-        # Handle form submission based on the current step
-        step = request.POST.get('step', 'basic')
-        
-        if step == 'basic':
-            form = BasicInformationForm(request.POST)
-            if form.is_valid():
-                basic_info = form.save()
-                return JsonResponse({'success': True, 'id': basic_info.id})
-        
-        elif step in ['embodied', 'operational']:
-            if step == 'embodied':
-                form = EmbodiedImpactForm(request.POST, prefix='embodied')
-            else:
-                form = OperationalImpactForm(request.POST, prefix='operational')
-            
-            if form.is_valid():
-                impact = form.save()
-                return JsonResponse({'success': True, 'id': impact.id})
-    
-    # Initialize forms for GET request
-    context = {
-        'basic_form': BasicInformationForm(),
-        'embodied_form': EmbodiedImpactForm(prefix='embodied'),
-        'operational_form': OperationalImpactForm(prefix='operational'),
-    }
-    return render(request, 'metadata.html', context)
 
 def get_yml_preview(request):
     try:
@@ -137,27 +109,20 @@ def get_yml_preview(request):
         
         # Convert to YAML
         yml_content = yaml.dump(data, sort_keys=False, allow_unicode=True)
-        return JsonResponse({'success': True, 'yml': yml_content})
+        return HttpResponse(yml_content, content_type='application/x-yaml')
     except Exception as e:
-        return JsonResponse({'success': False, 'error': str(e)})
+        return HttpResponseBadRequest(str(e))
 
 def download_yml(request):
     try:
         response = get_yml_preview(request)
         if response.status_code == 200:
-            data = json.loads(response.content)
-            yml_content = data['yml']
-            
-            # Create response
-            response = HttpResponse(yml_content, content_type='application/x-yaml')
             filename = request.GET.get('title', 'metadata').lower().replace(' ', '_')
             response['Content-Disposition'] = f'attachment; filename="{filename}.yml"'
-            return response
-        else:
-            return response
+        return response
     
     except Exception as e:
-        return HttpResponse(str(e), status=400)
+        return HttpResponseBadRequest(str(e))
 
 def work_in_progress(request, form_type):
     return render(request, "work_in_progress.html", {'form_type': form_type})
