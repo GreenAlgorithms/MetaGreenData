@@ -1,23 +1,74 @@
-{% load static %}
-<!DOCTYPE html>
-<html>
-<head>
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <div class="text-center mb-5">
+        <h1 class="display-4">MetaGreenData</h1>
+        <p class="lead">Generate standardized environmental impact metadata for your research</p>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-plane-departure fa-3x mb-3 text-primary"></i>
+                    <h3 class="card-title">Travel</h3>
+                    <p class="card-text">Document the environmental impact of research-related travel.</p>
+                    <a href="{% url 'work_in_progress' 'travel' %}" class="btn btn-outline-primary">Get Started</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-flask fa-3x mb-3 text-success"></i>
+                    <h3 class="card-title">Experimental Work</h3>
+                    <p class="card-text">Track the environmental footprint of laboratory experiments.</p>
+                    <a href="{% url 'work_in_progress' 'experimental' %}" class="btn btn-outline-success">Get
+                        Started</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-microchip fa-3x mb-3 text-info"></i>
+                    <h3 class="card-title">Computing</h3>
+                    <p class="card-text">Measure the environmental impact of computational research.</p>
+                    <a href="{% url 'computing' %}" class="btn btn-outline-info">Get Started</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mt-5">
+        <p class="text-muted">Choose a category to begin generating your environmental impact metadata</p>
+    </div>
+</div>
+
 <style>
-    .site-header {
-    background-color: #9FCC2E; /* Example color */
-    padding: 20px;
-    height: 100px; /* Adjust as needed */
-    text-align: center;
-}
+    .card {
+        transition: transform 0.2s ease-in-out;
+        border: none;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+    }
+
+    .btn {
+        border-radius: 20px;
+        padding: 8px 24px;
+    }
+
+    .fas {
+        transition: transform 0.2s ease-in-out;
+    }
+
+    .card:hover .fas {
+        transform: scale(1.1);
+    }
 </style>
-    <title>My Website</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
-</head>
-<body>
-    <header class="site-header">
-    <a href="#">Travel</a>
-    <a href="#">Experimental work</a>
-    <a href="{% url 'computing'  %}"> Computing</a>
-    </header>
-</body>
-</html>
+{% endblock %}

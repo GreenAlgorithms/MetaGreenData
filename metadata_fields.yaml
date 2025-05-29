@@ -1,0 +1,55 @@
+Experimental work: {}
+Computing:
+  ? Embodied [all but carbon footprint could be hidden under a dropdown saying "Data
+    for the categories below from Life Cycle Assessments may be harder to obtain,
+    so can be skipped if missing."
+  : 'Carbon footprint ':
+      Value (in gCO2e) [float]: {}
+      Source and method [text]: {}
+    'Depletion of Abiotic Resources (Minerals, Metals) ':
+      Value (in kg Sb-eq) [float]: {}
+      Source and method [text]: {}
+    Particule Matter Emissions:
+      Value (disease incidence, no unit) [float]: {}
+      Source and method [text]: {}
+    'Acidification potential ':
+      Value (in kg mol H+) [float]: {}
+      Source and method [text]: {}
+    'Ionising Radiation Related to Human Health ':
+      Value (in kBq U-235) [float]: {}
+      Source and method [text]: {}
+    'Photochemical Ozone Formation ':
+      Value (in kg NMVOC-eq) [float]: {}
+      Source and method [text]: {}
+    'Abiotic Depletion Potential (Fossil Fuels) ':
+      Value (in MJ) [float]: {}
+      Source and method [text]: {}
+    'Freshwater Eco-Toxicity Potential ':
+      Value (in CTUe) [float]: {}
+      Source and method [text]: {}
+  Operational:
+    Impact values:
+      Energy consumption (in kWh) [float]: {}
+      Carbon footprint (in gCO2e) [float]: {}
+      Water consumption (in liters) [float]: {}
+    Methods and scope:
+      'Software boundaries ':
+        'Stages included [list]: Development and testing, Deployment,  Use,  Maintenance        ': {}
+      Tool used (if any) [select among list or free text] [see "tools" tab]:
+        'Stages included [list]: Development and testing, Deployment,  Use,  Maintenance        ': {}
+      Hardware boundaries:
+        'Components included [list]: CPUs, GPUs, memory, storage, networking': {}
+        Details on hardware used [long freeform text]: {}
+      Infrastructure:
+        'Elements included [list]: energy overheads, idle machines, water usage, IoT devices, edge devices': {}
+        Power Usage Effectiveness (PUE):
+          Value [float > 1]: {}
+          Estimation method used [text]: {}
+        Water usage effectiveness:
+          Value (in L/kWh) [float]: {}
+          Estimation method used [text]: {}
+      Electricity carbon intensity:
+        Value (in gCO2e/kWh) [float]:
+          Estimation method used [text]: {}
+        Source [text]:
+          Estimation method used [text]: {}

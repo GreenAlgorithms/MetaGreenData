@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <div class="text-center">
+        <i class="fas fa-tools fa-5x mb-4 text-muted"></i>
+        <h1 class="display-4">Coming Soon</h1>
+        <div class="mt-4">
+            <p>Please check back later!</p>
+        </div>
+        <a href="{% url 'home' %}" class="btn btn-primary mt-4">
+            <i class="fas fa-arrow-left mr-2"></i> Back to Home
+        </a>
+    </div>
+</div>
+
+<style>
+    .fas.fa-tools {
+        animation: wrench 2.5s ease infinite;
+    }
+
+    @keyframes wrench {
+        0% {
+            transform: rotate(-15deg);
+        }
+
+        50% {
+            transform: rotate(15deg);
+        }
+
+        100% {
+            transform: rotate(-15deg);
+        }
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,527 @@
+{% extends 'base.html' %}
+{% block content %}
+<script>
+    // Add progress sidebar class to body
+    document.body.classList.add('has-progress-sidebar');
+</script>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="d-flex align-items-center mb-4">
+                <a href="{% url 'home' %}" class="btn btn-outline-secondary me-3">
+                    <i class="fas fa-arrow-left"></i> Back
+                </a>
+                <h2 class="mb-0">Computing Impact Form</h2>
+            </div>
+
+            <!-- Basic Information Section -->
+            <div id="basic-section" class="form-section">
+                <h3 class="mb-3">Basic Information</h3>
+                <form id="basic-form" class="needs-validation" novalidate>
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            {{ basic_form.title.label_tag }}
+                            {{ basic_form.title }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {{ basic_form.repository_url.label_tag }}
+                            {{ basic_form.repository_url }}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        {{ basic_form.description.label_tag }}
+                        {{ basic_form.description }}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ basic_form.keywords.label_tag }}
+                        {{ basic_form.keywords }}
+                        <small class="text-muted">Separate keywords with commas</small>
+                    </div>
+
+                    <button type="button" class="btn btn-primary" onclick="showSection('embodied')">Next: Embodied
+                        Impact</button>
+                </form>
+            </div>
+
+            <!-- Embodied Impact Section -->
+            <div id="embodied-section" class="form-section" style="display: none;">
+                <h3 class="mb-3">Embodied Impact</h3>
+                <form id="embodied-form" class="needs-validation" novalidate>
+                    {% csrf_token %}
+
+                    <!-- Carbon Footprint -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h6 class="mb-0">Carbon Footprint</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    {{ embodied_form.carbon_footprint.label_tag }}
+                                    {{ embodied_form.carbon_footprint }}
+                                </div>
+                                <div class="col-md-6">
+                                    {{ embodied_form.carbon_footprint_source.label_tag }}
+                                    {{ embodied_form.carbon_footprint_source }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Depletion of Abiotic Resources -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h6 class="mb-0">Depletion of Abiotic Resources (Minerals, Metals)</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    {{ embodied_form.depletion_abiotic.label_tag }}
+                                    {{ embodied_form.depletion_abiotic }}
+                                </div>
+                                <div class="col-md-6">
+                                    {{ embodied_form.depletion_abiotic_source.label_tag }}
+                                    {{ embodied_form.depletion_abiotic_source }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Particulate Matter Emissions -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h6 class="mb-0">Particulate Matter Emissions</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    {{ embodied_form.particulate_matter.label_tag }}
+                                    {{ embodied_form.particulate_matter }}
+                                </div>
+                                <div class="col-md-6">
+                                    {{ embodied_form.particulate_matter_source.label_tag }}
+                                    {{ embodied_form.particulate_matter_source }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Acidification Potential -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h6 class="mb-0">Acidification Potential</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    {{ embodied_form.acidification_potential.label_tag }}
+                                    {{ embodied_form.acidification_potential }}
+                                </div>
+                                <div class="col-md-6">
+                                    {{ embodied_form.acidification_potential_source.label_tag }}
+                                    {{ embodied_form.acidification_potential_source }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Ionising Radiation -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h6 class="mb-0">Ionising Radiation Related to Human Health</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    {{ embodied_form.ionising_radiation.label_tag }}
+                                    {{ embodied_form.ionising_radiation }}
+                                </div>
+                                <div class="col-md-6">
+                                    {{ embodied_form.ionising_radiation_source.label_tag }}
+                                    {{ embodied_form.ionising_radiation_source }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Photochemical Ozone Formation -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h6 class="mb-0">Photochemical Ozone Formation</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    {{ embodied_form.photochemical_ozone.label_tag }}
+                                    {{ embodied_form.photochemical_ozone }}
+                                </div>
+                                <div class="col-md-6">
+                                    {{ embodied_form.photochemical_ozone_source.label_tag }}
+                                    {{ embodied_form.photochemical_ozone_source }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Abiotic Depletion Potential (Fossil Fuels) -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h6 class="mb-0">Abiotic Depletion Potential (Fossil Fuels)</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    {{ embodied_form.abiotic_depletion_fossil.label_tag }}
+                                    {{ embodied_form.abiotic_depletion_fossil }}
+                                </div>
+                                <div class="col-md-6">
+                                    {{ embodied_form.abiotic_depletion_fossil_source.label_tag }}
+                                    {{ embodied_form.abiotic_depletion_fossil_source }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Freshwater Eco-Toxicity Potential -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h6 class="mb-0">Freshwater Eco-Toxicity Potential</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    {{ embodied_form.freshwater_ecotoxicity.label_tag }}
+                                    {{ embodied_form.freshwater_ecotoxicity }}
+                                </div>
+                                <div class="col-md-6">
+                                    {{ embodied_form.freshwater_ecotoxicity_source.label_tag }}
+                                    {{ embodied_form.freshwater_ecotoxicity_source }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-secondary" onclick="showSection('basic')">Previous</button>
+                        <button type="button" class="btn btn-primary" onclick="showSection('operational')">Next:
+                            Operational Impact</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Operational Impact Section -->
+            <div id="operational-section" class="form-section" style="display: none;">
+                <h3 class="mb-3">Operational Impact</h3>
+                <form id="operational-form" class="needs-validation" novalidate>
+                    {% csrf_token %}
+
+                    <!-- Impact Values -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">Impact Values</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    {{ operational_form.energy_consumption.label_tag }}
+                                    {{ operational_form.energy_consumption }}
+                                </div>
+                                <div class="col-md-4">
+                                    {{ operational_form.carbon_footprint.label_tag }}
+                                    {{ operational_form.carbon_footprint }}
+                                </div>
+                                <div class="col-md-4">
+                                    {{ operational_form.water_consumption.label_tag }}
+                                    {{ operational_form.water_consumption }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Methods and Scope -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">Methods and Scope</h5>
+                        </div>
+                        <div class="card-body">
+                            <!-- Software and Hardware Boundaries -->
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <h6>{{ operational_form.software_boundaries.label }}</h6>
+                                    {{ operational_form.software_boundaries }}
+                                </div>
+                                <div class="col-md-6">
+                                    <h6>{{ operational_form.hardware_boundaries.label }}</h6>
+                                    {{ operational_form.hardware_boundaries }}
+                                </div>
+                            </div>
+
+                            <!-- Tool Stages -->
+                            <div class="mb-4">
+                                <h6>{{ operational_form.tool_stages.label }}</h6>
+                                {{ operational_form.tool_stages }}
+                            </div>
+
+                            <!-- Hardware Details -->
+                            <div class="mb-4">
+                                {{ operational_form.details_of_hardware.label_tag }}
+                                {{ operational_form.details_of_hardware }}
+                            </div>
+
+                            <!-- Infrastructure -->
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h6 class="mb-0">Infrastructure</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <h6>{{ operational_form.infrastructure_elements.label }}</h6>
+                                        {{ operational_form.infrastructure_elements }}
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            {{ operational_form.pue_value.label_tag }}
+                                            {{ operational_form.pue_value }}
+                                        </div>
+                                        <div class="col-md-6">
+                                            {{ operational_form.pue_method.label_tag }}
+                                            {{ operational_form.pue_method }}
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            {{ operational_form.wue_value.label_tag }}
+                                            {{ operational_form.wue_value }}
+                                        </div>
+                                        <div class="col-md-6">
+                                            {{ operational_form.wue_method.label_tag }}
+                                            {{ operational_form.wue_method }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Electricity Carbon Intensity -->
+                            <div class="row">
+                                <div class="col-md-6">
+                                    {{ operational_form.electrical_carbon_intensity.label_tag }}
+                                    {{ operational_form.electrical_carbon_intensity }}
+                                </div>
+                                <div class="col-md-6">
+                                    {{ operational_form.electrical_carbon_intensity_source.label_tag }}
+                                    {{ operational_form.electrical_carbon_intensity_source }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-secondary"
+                            onclick="showSection('embodied')">Previous</button>
+                        <button type="button" class="btn btn-primary" onclick="showSection('preview')">Next:
+                            Preview</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Preview Section -->
+            <div id="preview-section" class="form-section" style="display: none;">
+                <h3 class="mb-3">Preview & Download</h3>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-secondary"
+                        onclick="showSection('operational')">Previous</button>
+                    <button type="button" class="btn btn-success" onclick="downloadYml()">
+                        <i class="fas fa-download"></i> Download YML
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Live Preview Sidebar -->
+        <div class="col-md-4 position-fixed end-0"
+            style="top: 0; height: 100vh; background: #1e2124; padding: 2rem; border-radius: 12px 0 0 12px; box-shadow: -4px 0 15px rgba(0,0,0,0.1);">
+            <h4 class="text-white mb-3">Live Preview</h4>
+            <pre id="yml-preview" class="text-light p-3 bg-dark"
+                style="font-family: 'Monaco', 'Consolas', monospace; font-size: 0.9rem; white-space: pre-wrap; border-radius: 8px; max-height: calc(100vh - 6rem); overflow-y: auto;">Loading preview...</pre>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<style>
+    .list-unstyled {
+        padding-left: 0;
+        list-style: none;
+    }
+
+    .list-unstyled li {
+        margin-bottom: 0.5rem;
+    }
+
+    .card-header {
+        background-color: #f8f9fa;
+        border-bottom: 1px solid rgba(0, 0, 0, .125);
+    }
+
+    .card-header h5,
+    .card-header h6 {
+        margin-bottom: 0;
+        color: #2c3e50;
+    }
+
+    .btn-group {
+        gap: 0.5rem;
+    }
+
+    #yml-preview::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    #yml-preview::-webkit-scrollbar-track {
+        background: #2a2e32;
+        border-radius: 4px;
+    }
+
+    #yml-preview::-webkit-scrollbar-thumb {
+        background: #454b52;
+        border-radius: 4px;
+    }
+
+    #yml-preview::-webkit-scrollbar-thumb:hover {
+        background: #515961;
+    }
+</style>
+
+<script>
+    let formData = {};
+    let debounceTimer;
+
+    // Function to update preview with debounce
+    function updatePreview() {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+            // Convert formData to URLSearchParams
+            const params = new URLSearchParams();
+            Object.entries(formData).forEach(([key, value]) => {
+                if (Array.isArray(value)) {
+                    // For arrays, append each value with array notation
+                    value.forEach(v => params.append(`${key}[]`, v));
+                } else {
+                    params.append(key, value);
+                }
+            });
+
+            fetch(`/computing/yml-preview/?${params.toString()}`)
+                .then(response => {
+                    return response.text().then(bodyText => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP ${response.status} - ${bodyText}`);
+                        }
+                        return bodyText;
+                    });
+                })
+                .then(data => {
+                    document.getElementById('yml-preview').textContent = data;
+                })
+                .catch(error => {
+                    console.error('Error fetching Live Preview:', error);
+                })
+        }, 300);
+    }
+
+    // Function to collect form data
+    function collectFormData(form) {
+        // Get all checkboxes first and organize them by name
+        const checkboxes = {};
+        form.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            const name = checkbox.name;
+            if (!checkboxes[name]) {
+                checkboxes[name] = [];
+            }
+            if (checkbox.checked) {
+                checkboxes[name].push(checkbox.value);
+            }
+        });
+
+        // Update formData with checkbox values
+        Object.entries(checkboxes).forEach(([name, values]) => {
+            const cleanName = name.replace('embodied-', '').replace('operational-', '');
+            formData[cleanName] = values;
+        });
+
+        // Handle other form inputs
+        form.querySelectorAll('input:not([type="checkbox"]), textarea, select').forEach(input => {
+            const name = input.name;
+            const value = input.value;
+            if (name) {
+                const cleanName = name.replace('embodied-', '').replace('operational-', '');
+                formData[cleanName] = value;
+            }
+        });
+
+        updatePreview();
+    }
+
+    // Add input event listeners to all forms
+    ['basic-form', 'embodied-form', 'operational-form'].forEach(formId => {
+        const form = document.getElementById(formId);
+        if (!form) return;
+
+        // Initial form data collection
+        collectFormData(form);
+
+        // Add event listeners
+        form.querySelectorAll('input, textarea, select').forEach(input => {
+            if (input.type === 'checkbox') {
+                input.addEventListener('change', () => {
+                    collectFormData(form);
+                });
+            } else {
+                input.addEventListener('input', () => {
+                    collectFormData(form);
+                });
+            }
+        });
+    });
+
+    function showSection(sectionName) {
+        // Hide all sections
+        document.querySelectorAll('.form-section').forEach(section => {
+            section.style.display = 'none';
+        });
+
+        // Show requested section
+        document.getElementById(sectionName + '-section').style.display = 'block';
+
+        // Update progress sidebar
+        document.querySelectorAll('.progress-item').forEach(item => {
+            item.classList.remove('active');
+            if (item.dataset.section === sectionName) {
+                item.classList.add('active');
+            }
+        });
+    }
+
+    function downloadYml() {
+        const queryString = new URLSearchParams(formData).toString();
+        window.location.href = `/computing/download/?${queryString}`;
+    }
+
+    // Initialize progress tracking
+    document.querySelectorAll('.progress-item').forEach(item => {
+        item.addEventListener('click', () => {
+            showSection(item.dataset.section);
+        });
+    });
+
+    // Initial preview update
+    updatePreview();
+</script>
+{% endblock %}
+{% endblock %}
