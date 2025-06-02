@@ -5,6 +5,35 @@
     document.body.classList.add('has-progress-sidebar');
 </script>
 
+<style>
+    .form-control.is-invalid {
+        border-color: #dc3545;
+        padding-right: calc(1.5em + 0.75rem);
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right calc(0.375em + 0.1875rem) center;
+        background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+    }
+
+    .invalid-tooltip {
+        display: none;
+        position: absolute;
+        top: 100%;
+        z-index: 5;
+        max-width: 100%;
+        padding: 0.25rem 0.5rem;
+        margin-top: 0.1rem;
+        font-size: 0.875rem;
+        color: #fff;
+        background-color: rgba(220, 53, 69, 0.9);
+        border-radius: 0.25rem;
+    }
+
+    .form-control.is-invalid~.invalid-tooltip {
+        display: block;
+    }
+</style>
+
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-8">
@@ -354,53 +383,56 @@
 </div>
 
 {% block extra_js %}
-<style>
-    .list-unstyled {
-        padding-left: 0;
-        list-style: none;
-    }
-
-    .list-unstyled li {
-        margin-bottom: 0.5rem;
-    }
-
-    .card-header {
-        background-color: #f8f9fa;
-        border-bottom: 1px solid rgba(0, 0, 0, .125);
-    }
-
-    .card-header h5,
-    .card-header h6 {
-        margin-bottom: 0;
-        color: #2c3e50;
-    }
-
-    .btn-group {
-        gap: 0.5rem;
-    }
-
-    #yml-preview::-webkit-scrollbar {
-        width: 8px;
-    }
-
-    #yml-preview::-webkit-scrollbar-track {
-        background: #2a2e32;
-        border-radius: 4px;
-    }
-
-    #yml-preview::-webkit-scrollbar-thumb {
-        background: #454b52;
-        border-radius: 4px;
-    }
-
-    #yml-preview::-webkit-scrollbar-thumb:hover {
-        background: #515961;
-    }
-</style>
-
 <script>
     let formData = {};
     let debounceTimer;
+
+    // Function to validate a numeric input
+    function validateNumericInput(input, shouldShowError = true) {
+        const value = input.value;
+        const name = input.name;
+        const isRequired = input.hasAttribute('required');
+
+        // Clear previous validation state if we're showing errors
+        if (shouldShowError) {
+            input.classList.remove('is-invalid');
+            const existingTooltip = input.nextElementSibling;
+            if (existingTooltip && existingTooltip.classList.contains('invalid-tooltip')) {
+                existingTooltip.remove();
+            }
+        }
+
+        // Skip validation if field is optional and empty
+        if (!isRequired && (!value || value.trim() === '')) {
+            return true;
+        }
+
+        // Validate numeric value
+        const numValue = parseFloat(value);
+        const isValid = !isNaN(numValue) && value.trim() === String(numValue);
+
+        // Additional validation for specific fields
+        if (isValid && name.includes('pue_value') && numValue < 1) {
+            if (shouldShowError) {
+                input.classList.add('is-invalid');
+                const tooltip = document.createElement('div');
+                tooltip.className = 'invalid-tooltip';
+                tooltip.textContent = 'PUE value must be greater than or equal to 1';
+                input.parentNode.insertBefore(tooltip, input.nextSibling);
+            }
+            return false;
+        }
+
+        if (!isValid && shouldShowError) {
+            input.classList.add('is-invalid');
+            const tooltip = document.createElement('div');
+            tooltip.className = 'invalid-tooltip';
+            tooltip.textContent = 'Please enter a valid number';
+            input.parentNode.insertBefore(tooltip, input.nextSibling);
+        }
+
+        return isValid;
+    }
 
     // Function to update preview with debounce
     function updatePreview() {
@@ -461,7 +493,19 @@
             const value = input.value;
             if (name) {
                 const cleanName = name.replace('embodied-', '').replace('operational-', '');
-                formData[cleanName] = value;
+                // Check if this is a numeric field (based on FloatField in Django form)
+                const isNumericField = input.classList.contains('form-control') &&
+                    input.placeholder &&
+                    input.placeholder.toLowerCase().includes('number');
+
+                if (isNumericField) {
+                    // Only validate the value, don't show errors during data collection
+                    if (validateNumericInput(input, false)) {
+                        formData[cleanName] = value;
+                    }
+                } else {
+                    formData[cleanName] = value;
+                }
             }
         });
 
@@ -473,19 +517,39 @@
         const form = document.getElementById(formId);
         if (!form) return;
 
-        // Initial form data collection
+        // Initial form data collection without showing validation errors
         collectFormData(form);
 
         // Add event listeners
         form.querySelectorAll('input, textarea, select').forEach(input => {
+            // Add a flag to track if the field has been interacted with
+            input.dataset.touched = 'false';
+
             if (input.type === 'checkbox') {
                 input.addEventListener('change', () => {
                     collectFormData(form);
                 });
             } else {
-                input.addEventListener('input', () => {
-                    collectFormData(form);
-                });
+                // For numeric fields, validate on input and blur
+                const isNumericField = input.classList.contains('form-control') &&
+                    input.placeholder &&
+                    input.placeholder.toLowerCase().includes('number');
+
+                if (isNumericField) {
+                    input.addEventListener('input', () => {
+                        input.dataset.touched = 'true';
+                        validateNumericInput(input, true);
+                        collectFormData(form);
+                    });
+                    input.addEventListener('blur', () => {
+                        input.dataset.touched = 'true';
+                        validateNumericInput(input, true);
+                    });
+                } else {
+                    input.addEventListener('input', () => {
+                        collectFormData(form);
+                    });
+                }
             }
         });
     });
