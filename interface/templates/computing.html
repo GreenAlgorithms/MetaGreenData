@@ -388,16 +388,18 @@
     let debounceTimer;
 
     // Function to validate a numeric input
-    function validateNumericInput(input) {
+    function validateNumericInput(input, shouldShowError = true) {
         const value = input.value;
         const name = input.name;
         const isRequired = input.hasAttribute('required');
 
-        // Clear previous validation state
-        input.classList.remove('is-invalid');
-        const existingTooltip = input.nextElementSibling;
-        if (existingTooltip && existingTooltip.classList.contains('invalid-tooltip')) {
-            existingTooltip.remove();
+        // Clear previous validation state if we're showing errors
+        if (shouldShowError) {
+            input.classList.remove('is-invalid');
+            const existingTooltip = input.nextElementSibling;
+            if (existingTooltip && existingTooltip.classList.contains('invalid-tooltip')) {
+                existingTooltip.remove();
+            }
         }
 
         // Skip validation if field is optional and empty
@@ -407,27 +409,29 @@
 
         // Validate numeric value
         const numValue = parseFloat(value);
-        if (isNaN(numValue) || value.trim() !== String(numValue)) {
+        const isValid = !isNaN(numValue) && value.trim() === String(numValue);
+
+        // Additional validation for specific fields
+        if (isValid && name.includes('pue_value') && numValue < 1) {
+            if (shouldShowError) {
+                input.classList.add('is-invalid');
+                const tooltip = document.createElement('div');
+                tooltip.className = 'invalid-tooltip';
+                tooltip.textContent = 'PUE value must be greater than or equal to 1';
+                input.parentNode.insertBefore(tooltip, input.nextSibling);
+            }
+            return false;
+        }
+
+        if (!isValid && shouldShowError) {
             input.classList.add('is-invalid');
             const tooltip = document.createElement('div');
             tooltip.className = 'invalid-tooltip';
             tooltip.textContent = 'Please enter a valid number';
             input.parentNode.insertBefore(tooltip, input.nextSibling);
-            return false;
         }
 
-        // Additional validation for specific fields
-        if (name.includes('pue_value') && numValue < 1) {
-            input.classList.add('is-invalid');
-            const tooltip = document.createElement('div');
-            tooltip.className = 'invalid-tooltip';
-            tooltip.textContent = 'PUE value must be greater than or equal to 1';
-            input.parentNode.insertBefore(tooltip, input.nextSibling);
-            return false;
-        }
-
-        // All validations passed
-        return true;
+        return isValid;
     }
 
     // Function to update preview with debounce
@@ -495,7 +499,8 @@
                     input.placeholder.toLowerCase().includes('number');
 
                 if (isNumericField) {
-                    if (validateNumericInput(input)) {
+                    // Only validate the value, don't show errors during data collection
+                    if (validateNumericInput(input, false)) {
                         formData[cleanName] = value;
                     }
                 } else {
@@ -512,11 +517,14 @@
         const form = document.getElementById(formId);
         if (!form) return;
 
-        // Initial form data collection
+        // Initial form data collection without showing validation errors
         collectFormData(form);
 
         // Add event listeners
         form.querySelectorAll('input, textarea, select').forEach(input => {
+            // Add a flag to track if the field has been interacted with
+            input.dataset.touched = 'false';
+
             if (input.type === 'checkbox') {
                 input.addEventListener('change', () => {
                     collectFormData(form);
@@ -529,11 +537,13 @@
 
                 if (isNumericField) {
                     input.addEventListener('input', () => {
-                        validateNumericInput(input);
+                        input.dataset.touched = 'true';
+                        validateNumericInput(input, true);
                         collectFormData(form);
                     });
                     input.addEventListener('blur', () => {
-                        validateNumericInput(input);
+                        input.dataset.touched = 'true';
+                        validateNumericInput(input, true);
                     });
                 } else {
                     input.addEventListener('input', () => {
